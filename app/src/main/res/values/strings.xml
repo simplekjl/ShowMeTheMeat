@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">How To Bake</string>
+    <string name="error_message">Sorry, there are no items to show.</string>
 </resources>
