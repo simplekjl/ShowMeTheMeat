@@ -6,8 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import com.simplekjl.howtobake.databinding.ActivityMainBinding;
 import com.simplekjl.howtobake.models.Recipe;
+import com.simplekjl.howtobake.network.ApiClient;
+import com.simplekjl.howtobake.network.ServiceEndpoints;
 import com.simplekjl.howtobake.utils.OnItemClickListener;
 import com.simplekjl.howtobake.utils.Utils;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,10 +30,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_main);
-        mRecipeList = Utils.readRecipesFromString(readJsonFromFileSystem());
-        Log.d(TAG, "onCreate: "+mRecipeList);
+        if (mRecipeList != null){
+
+        }
+        ServiceEndpoints service = ApiClient.getInstance().create(ServiceEndpoints.class);
+        Call<List<Recipe>> result = service.getRecipes();
+        result.enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+
+            }
+        });
+
     }
 
+    /**
+     * Use this method if the app is going to be holding the JSON file from the assets
+     *  Example code : mRecipeList = Utils.readRecipesFromString(readJsonFromFileSystem());
+     * @return String with all the values coming from the JSON in assets
+     */
     public String readJsonFromFileSystem(){
         String json = null;
         try {
