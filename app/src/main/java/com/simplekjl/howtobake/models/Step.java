@@ -3,20 +3,9 @@ package com.simplekjl.howtobake.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Step implements Parcelable {
-    private int id;
-    private String shortDescription;
-    private String description;
-    private String videoURL;
-    private String thumbnailURL;
+import com.google.gson.annotations.SerializedName;
 
-    protected Step(Parcel in) {
-        id = in.readInt();
-        shortDescription = in.readString();
-        description = in.readString();
-        videoURL = in.readString();
-        thumbnailURL = in.readString();
-    }
+public class Step implements Parcelable {
 
     public static final Creator<Step> CREATOR = new Creator<Step>() {
         @Override
@@ -29,6 +18,24 @@ public class Step implements Parcelable {
             return new Step[size];
         }
     };
+    @SerializedName("id")
+    private int id;
+    @SerializedName("shortDescription")
+    private String shortDescription;
+    @SerializedName("description")
+    private String description;
+    @SerializedName("videoURL")
+    private String videoURL;
+    @SerializedName("thumbnailURL")
+    private String thumbnailURL;
+
+    protected Step(Parcel in) {
+        id = in.readInt();
+        shortDescription = in.readString();
+        description = in.readString();
+        videoURL = in.readString();
+        thumbnailURL = in.readString();
+    }
 
     @Override
     public int describeContents() {

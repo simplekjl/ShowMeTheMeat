@@ -3,25 +3,11 @@ package com.simplekjl.howtobake.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class Recipe implements Parcelable {
-    private int id;
-    private String name;
-    private List<Ingredient> ingredientsList;
-    private List<Step> stepsList;
-    private int servings;
-    private String image;
-
-    protected Recipe(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        ingredientsList = in.createTypedArrayList(Ingredient.CREATOR);
-        stepsList = in.createTypedArrayList(Step.CREATOR);
-        servings = in.readInt();
-        image = in.readString();
-    }
-
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
         @Override
         public Recipe createFromParcel(Parcel in) {
@@ -33,6 +19,27 @@ public class Recipe implements Parcelable {
             return new Recipe[size];
         }
     };
+    @SerializedName("id")
+    private int id;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("ingredients")
+    private List<Ingredient> ingredientsList;
+    @SerializedName("steps")
+    private List<Step> stepsList;
+    @SerializedName("servings")
+    private int servings;
+    @SerializedName("image")
+    private String image;
+
+    private Recipe(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        ingredientsList = in.createTypedArrayList(Ingredient.CREATOR);
+        stepsList = in.createTypedArrayList(Step.CREATOR);
+        servings = in.readInt();
+        image = in.readString();
+    }
 
     @Override
     public int describeContents() {
@@ -47,10 +54,6 @@ public class Recipe implements Parcelable {
         dest.writeTypedList(stepsList);
         dest.writeInt(servings);
         dest.writeString(image);
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {
