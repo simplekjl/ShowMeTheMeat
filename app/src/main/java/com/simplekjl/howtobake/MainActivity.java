@@ -26,6 +26,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
+/*
+* check links https://stackoverflow.com/questions/10347846/how-to-make-a-gridlayout-fit-screen-size/34381245
+*
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
