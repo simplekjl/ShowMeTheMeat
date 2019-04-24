@@ -23,7 +23,7 @@ public class IngredientArrayAdapter extends ArrayAdapter<Ingredient> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater inflater =
+        //LayoutInflater inflater =
         return super.getView(position, convertView, parent);
     }
 }

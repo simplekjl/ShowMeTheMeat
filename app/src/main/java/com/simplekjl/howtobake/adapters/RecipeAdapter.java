@@ -1,13 +1,14 @@
 package com.simplekjl.howtobake.adapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.simplekjl.howtobake.R;
 import com.simplekjl.howtobake.models.Recipe;
@@ -37,7 +38,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.setItem(mList.get(i),onItemClickListener);
+        viewHolder.setItem(mList.get(i), onItemClickListener);
     }
 
     @Override

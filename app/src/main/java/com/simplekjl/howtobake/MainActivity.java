@@ -3,14 +3,15 @@ package com.simplekjl.howtobake;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.simplekjl.howtobake.adapters.RecipeAdapter;
 import com.simplekjl.howtobake.databinding.ActivityMainBinding;
@@ -28,8 +29,8 @@ import retrofit2.Response;
 
 
 /*
-* check links https://stackoverflow.com/questions/10347846/how-to-make-a-gridlayout-fit-screen-size/34381245
-*
+ * check links https://stackoverflow.com/questions/10347846/how-to-make-a-gridlayout-fit-screen-size/34381245
+ *
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -45,11 +46,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mContext = this;
-        if (mRecipeList != null){
+        if (mRecipeList != null) {
             showResults();
-        }else{
+        } else {
             getRecipes();
         }
 
@@ -63,13 +64,14 @@ public class MainActivity extends AppCompatActivity {
         result.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                if(response.isSuccessful()){
-                    if(response.body()!= null){
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
                         mRecipeList = response.body();
                         showResults();
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 showErrorMessage();
@@ -103,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
         OnItemClickListener onItemClickListener = new OnItemClickListener<Integer>() {
             @Override
             public void onItemClick(Integer item) {
-                Intent intent = new Intent(mContext,DetailRecipeActivity.class);
-                intent.putExtra("recipe",mRecipeList.get(item));
+                Intent intent = new Intent(mContext, DetailRecipeActivity.class);
+                intent.putExtra("recipe", mRecipeList.get(item));
                 startActivity(intent);
             }
         };
@@ -133,9 +135,9 @@ public class MainActivity extends AppCompatActivity {
         if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_SMALL)
                 || getResources().getConfiguration().isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_NORMAL)) {
             return 1;
-        } else if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE)){
+        } else if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE)) {
             return 2;
-        }else if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_XLARGE)) {
+        } else if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_XLARGE)) {
             return 3;
         } else {
             //default value

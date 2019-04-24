@@ -1,14 +1,16 @@
 package com.simplekjl.howtobake.fragments;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.simplekjl.howtobake.R;
 import com.simplekjl.howtobake.adapters.RecipeDetailAdapter;
@@ -16,7 +18,6 @@ import com.simplekjl.howtobake.databinding.FragmentRecipeDetailBinding;
 import com.simplekjl.howtobake.models.Ingredient;
 import com.simplekjl.howtobake.models.Step;
 
-import java.io.LineNumberReader;
 import java.util.List;
 
 /**
@@ -72,10 +73,10 @@ public class RecipeDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         FragmentRecipeDetailBinding mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe_detail, container, false);
         View view = mBinding.getRoot();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         mBinding.rvRecipes.setLayoutManager(linearLayoutManager);
 
-        mAdapter = new RecipeDetailAdapter(mStepsList,mIngredientsList);
+        mAdapter = new RecipeDetailAdapter(mStepsList, mIngredientsList);
         mBinding.rvRecipes.setAdapter(mAdapter);
 
         return view;
