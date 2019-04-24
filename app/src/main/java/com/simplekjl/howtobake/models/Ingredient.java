@@ -3,14 +3,20 @@ package com.simplekjl.howtobake.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Ingredient implements Parcelable {
 
-    private int quantity;
+    @SerializedName("quantity")
+    private String quantity;
+    @SerializedName("measure")
     private String measure;
+    @SerializedName("ingredient")
     private String ingredient;
 
+
     protected Ingredient(Parcel in) {
-        quantity = in.readInt();
+        quantity = in.readString();
         measure = in.readString();
         ingredient = in.readString();
     }
@@ -34,12 +40,21 @@ public class Ingredient implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(quantity);
+        dest.writeString(quantity);
         dest.writeString(measure);
         dest.writeString(ingredient);
     }
 
-    public int getQuantity() {
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "quantity='" + quantity + '\'' +
+                ", measure='" + measure + '\'' +
+                ", ingredient='" + ingredient + '\'' +
+                "}\n";
+    }
+
+    public String getQuantity() {
         return quantity;
     }
 

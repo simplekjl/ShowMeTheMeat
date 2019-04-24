@@ -1,29 +1,37 @@
 package com.simplekjl.howtobake;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
-import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
+
 import com.simplekjl.howtobake.adapters.RecipeAdapter;
 import com.simplekjl.howtobake.databinding.ActivityMainBinding;
 import com.simplekjl.howtobake.models.Recipe;
 import com.simplekjl.howtobake.network.ApiClient;
 import com.simplekjl.howtobake.network.ServiceEndpoints;
 import com.simplekjl.howtobake.utils.OnItemClickListener;
-import com.simplekjl.howtobake.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+
+/*
+ * check links https://stackoverflow.com/questions/10347846/how-to-make-a-gridlayout-fit-screen-size/34381245
+ *
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,16 +41,16 @@ public class MainActivity extends AppCompatActivity {
     //data variables
     private List<Recipe> mRecipeList;
     private RecipeAdapter mRecipeAdapter;
-    private OnItemClickListener onItemClickListener;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this,R.layout.activity_main);
-        if (mRecipeList != null){
-            mRecipeAdapter = new RecipeAdapter(mRecipeList);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mContext = this;
+        if (mRecipeList != null) {
             showResults();
-        }else{
+        } else {
             getRecipes();
         }
 
@@ -56,14 +64,14 @@ public class MainActivity extends AppCompatActivity {
         result.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                if(response.isSuccessful()){
-                    if(response.body()!= null){
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
                         mRecipeList = response.body();
-                        mRecipeAdapter = new RecipeAdapter(mRecipeList);
                         showResults();
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 showErrorMessage();
@@ -91,8 +99,18 @@ public class MainActivity extends AppCompatActivity {
         mBinding.rvRecipes.setVisibility(View.VISIBLE);
         mBinding.errorMessage.setVisibility(View.INVISIBLE);
         //setup recyclerView
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mBinding.rvRecipes.setLayoutManager(layoutManager);
+        int columns = numberOfColums();
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, columns);
+        mBinding.rvRecipes.setLayoutManager(gridLayoutManager);
+        OnItemClickListener onItemClickListener = new OnItemClickListener<Integer>() {
+            @Override
+            public void onItemClick(Integer item) {
+                Intent intent = new Intent(mContext, DetailRecipeActivity.class);
+                intent.putExtra("recipe", mRecipeList.get(item));
+                startActivity(intent);
+            }
+        };
+        mRecipeAdapter = new RecipeAdapter(mRecipeList, onItemClickListener);
         mBinding.rvRecipes.setAdapter(mRecipeAdapter);
     }
 
@@ -111,24 +129,20 @@ public class MainActivity extends AppCompatActivity {
         return cm.getActiveNetworkInfo() != null &&
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
-    /**
-     * Use this method if the app is going to be holding the JSON file from the assets
-     *  Example code : mRecipeList = Utils.readRecipesFromString(readJsonFromFileSystem());
-     * @return String with all the values coming from the JSON in assets
-     */
-    public String readJsonFromFileSystem(){
-        String json = null;
-        try {
-            InputStream inputStream = getAssets().open("recipes.json");
-            int size = inputStream.available();
-            byte[] buffer = new byte[size];
-            inputStream.read(buffer);
-            inputStream.close();
-            json = new String(buffer, "UTF-8");
 
-        } catch (IOException e) {
-            e.printStackTrace();
+    int numberOfColums() {
+        Configuration configuration = getResources().getConfiguration();
+        if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_SMALL)
+                || getResources().getConfiguration().isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_NORMAL)) {
+            return 1;
+        } else if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE)) {
+            return 2;
+        } else if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_XLARGE)) {
+            return 3;
+        } else {
+            //default value
+            return 1;
         }
-        return json;
     }
+
 }
