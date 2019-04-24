@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="8dp"
+    style="@style/Widget.MaterialComponents.CardView"
+    app:cardPreventCornerOverlap="true">
+
+    <TextView
+        android:id="@+id/step_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/material_8dp_card_spacing"
+        android:layout_marginTop="@dimen/material_8dp_card_spacing"
+        android:layout_marginRight="@dimen/material_8dp_card_spacing"
+        android:layout_marginBottom="@dimen/material_8dp_card_spacing"
+        tools:text="Hola este es el paso 1" />
+
+</androidx.cardview.widget.CardView>

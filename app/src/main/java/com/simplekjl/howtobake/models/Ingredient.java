@@ -53,4 +53,16 @@ public class Ingredient implements Parcelable {
                 ", ingredient='" + ingredient + '\'' +
                 "}\n";
     }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public String getMeasure() {
+        return measure;
+    }
+
+    public String getIngredient() {
+        return ingredient;
+    }
 }

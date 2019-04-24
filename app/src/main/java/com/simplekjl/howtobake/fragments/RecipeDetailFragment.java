@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.simplekjl.howtobake.R;
-import com.simplekjl.howtobake.adapters.RecipeDetailAdapter;
+import com.simplekjl.howtobake.adapters.IngredientAdapter;
+import com.simplekjl.howtobake.adapters.StepAdapter;
 import com.simplekjl.howtobake.databinding.FragmentRecipeDetailBinding;
 import com.simplekjl.howtobake.models.Ingredient;
 import com.simplekjl.howtobake.models.Step;
@@ -36,7 +37,10 @@ public class RecipeDetailFragment extends Fragment {
 
     private List<Ingredient> mIngredientsList;
     private List<Step> mStepsList;
-    private RecipeDetailAdapter mAdapter;
+    //adapters
+    private IngredientAdapter mIngredientAdapter;
+    private StepAdapter mStepAdapter;
+
     private OnFragmentInteractionListener mListener;
 
     public RecipeDetailFragment() {
@@ -73,11 +77,23 @@ public class RecipeDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         FragmentRecipeDetailBinding mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe_detail, container, false);
         View view = mBinding.getRoot();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        mBinding.rvRecipes.setLayoutManager(linearLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext()) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        mBinding.rvIngredients.setLayoutManager(linearLayoutManager);
 
-        mAdapter = new RecipeDetailAdapter(mStepsList, mIngredientsList);
-        mBinding.rvRecipes.setAdapter(mAdapter);
+        mIngredientAdapter = new IngredientAdapter(mIngredientsList);
+        //adding into the Rcycler views
+        mBinding.rvIngredients.setAdapter(mIngredientAdapter);
+        mBinding.rvIngredients.setNestedScrollingEnabled(false);
+        //steps adapter
+        mStepAdapter = new StepAdapter(mStepsList);
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        mBinding.rvSteps.setLayoutManager(linearLayoutManager2);
+        mBinding.rvSteps.setAdapter(mStepAdapter);
 
         return view;
     }

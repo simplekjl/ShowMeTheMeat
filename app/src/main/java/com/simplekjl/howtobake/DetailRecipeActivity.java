@@ -23,6 +23,7 @@ public class DetailRecipeActivity extends AppCompatActivity implements RecipeDet
         setContentView(R.layout.activity_detail_recipe);
         if (getIntent().getExtras() != null) {
             mRecipe = getIntent().getExtras().getParcelable("recipe");
+            setTitle(mRecipe.getName());
             Log.d(TAG, "onCreate: "+ mRecipe);
         }
 
