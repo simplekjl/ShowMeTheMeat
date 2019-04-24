@@ -3,23 +3,24 @@ package com.simplekjl.howtobake.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.fragment.app.Fragment;
 
 import com.simplekjl.howtobake.R;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RecipesFragment.OnFragmentInteractionListener} interface
+ * {@link StepTabFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RecipesFragment#newInstance} factory method to
+ * Use the {@link StepTabFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecipesFragment extends Fragment {
+public class StepTabFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,7 +32,7 @@ public class RecipesFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public RecipesFragment() {
+    public StepTabFragment() {
         // Required empty public constructor
     }
 
@@ -41,11 +42,11 @@ public class RecipesFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment RecipesFragment.
+     * @return A new instance of fragment StepTabFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RecipesFragment newInstance(String param1, String param2) {
-        RecipesFragment fragment = new RecipesFragment();
+    public static StepTabFragment newInstance(String param1, String param2) {
+        StepTabFragment fragment = new StepTabFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -66,7 +67,7 @@ public class RecipesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recipes, container, false);
+        return inflater.inflate(R.layout.fragment_step_tab, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

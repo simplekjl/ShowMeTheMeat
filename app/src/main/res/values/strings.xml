@@ -7,4 +7,6 @@
     <string name="ingredients">Ingredients:</string>
     <string name="steps_title">Steps:</string>
     <string name="ingredient_list_title">Ingredient list:</string>
+    <string name="next_label">NEXT</string>
+    <string name="previous_label">PREVIOUS</string>
 </resources>
