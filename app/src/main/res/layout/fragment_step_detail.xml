@@ -10,7 +10,7 @@
         android:id="@+id/video_v"
         android:layout_width="match_parent"
         android:layout_height="255dp"
-        android:layout_marginBottom="@dimen/standard_dimen"
+        android:layout_marginBottom="@dimen/general_16dp_margin"
         android:paddingBottom="10dp" />
 
     <TextView

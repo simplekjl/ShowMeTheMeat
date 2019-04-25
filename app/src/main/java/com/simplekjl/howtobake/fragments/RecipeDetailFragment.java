@@ -1,6 +1,7 @@
 package com.simplekjl.howtobake.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,11 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.simplekjl.howtobake.R;
+import com.simplekjl.howtobake.RecipeVideoActivity;
 import com.simplekjl.howtobake.adapters.IngredientAdapter;
 import com.simplekjl.howtobake.adapters.StepAdapter;
 import com.simplekjl.howtobake.databinding.FragmentRecipeDetailBinding;
 import com.simplekjl.howtobake.models.Ingredient;
 import com.simplekjl.howtobake.models.Step;
+import com.simplekjl.howtobake.utils.OnItemClickListener;
 
 import java.util.List;
 
@@ -40,8 +43,8 @@ public class RecipeDetailFragment extends Fragment {
     //adapters
     private IngredientAdapter mIngredientAdapter;
     private StepAdapter mStepAdapter;
-
     private OnFragmentInteractionListener mListener;
+    private OnItemClickListener mClickAdapterListener;
 
     public RecipeDetailFragment() {
         // Required empty public constructor
@@ -89,8 +92,15 @@ public class RecipeDetailFragment extends Fragment {
         //adding into the Rcycler views
         mBinding.rvIngredients.setAdapter(mIngredientAdapter);
         mBinding.rvIngredients.setNestedScrollingEnabled(false);
+        mClickAdapterListener = new OnItemClickListener<Integer>() {
+            @Override
+            public void onItemClick(Integer position) {
+                Intent intent = new Intent(getActivity(), RecipeVideoActivity.class);
+                getActivity().startActivity(intent);
+            }
+        };
         //steps adapter
-        mStepAdapter = new StepAdapter(mStepsList);
+        mStepAdapter = new StepAdapter(mStepsList,mClickAdapterListener);
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         mBinding.rvSteps.setLayoutManager(linearLayoutManager2);
         mBinding.rvSteps.setAdapter(mStepAdapter);

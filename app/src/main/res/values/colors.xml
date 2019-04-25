@@ -9,4 +9,6 @@
     <color name="colorSecondaryDark">#ba6b6c</color>
     <color name="textColorPrimary">#000000</color>
     <color name="textColorSecondary">#F6F6F6</color>
+    <color name="ControlerBackground">#CC000000</color>
+    <color name="ControllerTextColor">#FFBEBEBE</color>
 </resources>

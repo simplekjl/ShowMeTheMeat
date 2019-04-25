@@ -7,10 +7,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.simplekjl.howtobake.R;
 import com.simplekjl.howtobake.models.Step;
+import com.simplekjl.howtobake.utils.OnItemClickListener;
 
 import java.util.List;
 
@@ -18,8 +20,10 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
 
     private Context mContext;
     private List<Step> mList;
+    private OnItemClickListener onItemClickListener;
 
-    public StepAdapter(List<Step> mStepsList) {
+    public StepAdapter(List<Step> mStepsList, OnItemClickListener listener) {
+        onItemClickListener = listener;
         mList = mStepsList;
     }
 
@@ -43,17 +47,24 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
         return mList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+     class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mStepTitle;
+        private CardView mCardView;
 
-        public ViewHolder(@NonNull View itemView) {
+         ViewHolder(@NonNull View itemView) {
             super(itemView);
             mStepTitle = itemView.findViewById(R.id.step_title);
+            mCardView = itemView.findViewById(R.id.step_card);
         }
-
-        public void seItem(Step step) {
+        void seItem(Step step) {
             mStepTitle.setText(step.getShortDescription());
+            mCardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(getAdapterPosition());
+                }
+            });
         }
     }
 }
