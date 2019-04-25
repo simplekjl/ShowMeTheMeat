@@ -18,60 +18,34 @@ import com.simplekjl.howtobake.RecipeVideoActivity;
 import com.simplekjl.howtobake.adapters.IngredientAdapter;
 import com.simplekjl.howtobake.adapters.StepAdapter;
 import com.simplekjl.howtobake.databinding.FragmentRecipeDetailBinding;
-import com.simplekjl.howtobake.models.Ingredient;
-import com.simplekjl.howtobake.models.Step;
+import com.simplekjl.howtobake.models.Recipe;
 import com.simplekjl.howtobake.utils.OnItemClickListener;
 
-import java.util.List;
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RecipeDetailFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RecipeDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RecipeDetailFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String INGREDIENTS_LIST = "ingredients";
     private static final String STEPS_LIST = "steps";
 
-    private List<Ingredient> mIngredientsList;
-    private List<Step> mStepsList;
+    public static boolean isTablet = false;
+    public static Recipe mRecipe;
     //adapters
     private IngredientAdapter mIngredientAdapter;
     private StepAdapter mStepAdapter;
     private OnFragmentInteractionListener mListener;
     private OnItemClickListener mClickAdapterListener;
 
-    public RecipeDetailFragment() {
+    public RecipeDetailFragment(Recipe recipe) {
         // Required empty public constructor
+        mRecipe = recipe;
     }
+    public RecipeDetailFragment(){
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Ingredient List.
-     * @param param2 step List.
-     * @return A new instance of fragment RecipeDetailFragment.
-     */
-
-    public static RecipeDetailFragment newInstance(String param1, String param2) {
-        RecipeDetailFragment fragment = new RecipeDetailFragment();
-        Bundle args = new Bundle();
-        args.putString(INGREDIENTS_LIST, param1);
-        args.putString(STEPS_LIST, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -88,7 +62,7 @@ public class RecipeDetailFragment extends Fragment {
         };
         mBinding.rvIngredients.setLayoutManager(linearLayoutManager);
 
-        mIngredientAdapter = new IngredientAdapter(mIngredientsList);
+        mIngredientAdapter = new IngredientAdapter(mRecipe.getIngredientsList());
         //adding into the Rcycler views
         mBinding.rvIngredients.setAdapter(mIngredientAdapter);
         mBinding.rvIngredients.setNestedScrollingEnabled(false);
@@ -100,7 +74,7 @@ public class RecipeDetailFragment extends Fragment {
             }
         };
         //steps adapter
-        mStepAdapter = new StepAdapter(mStepsList,mClickAdapterListener);
+        mStepAdapter = new StepAdapter(mRecipe.getStepsList(), mClickAdapterListener);
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         mBinding.rvSteps.setLayoutManager(linearLayoutManager2);
         mBinding.rvSteps.setAdapter(mStepAdapter);
@@ -132,13 +106,6 @@ public class RecipeDetailFragment extends Fragment {
         mListener = null;
     }
 
-    public void setIngredientsList(List<Ingredient> mIngredientsList) {
-        this.mIngredientsList = mIngredientsList;
-    }
-
-    public void setStepsList(List<Step> mStepsList) {
-        this.mStepsList = mStepsList;
-    }
 
     /**
      * This interface must be implemented by activities that contain this
