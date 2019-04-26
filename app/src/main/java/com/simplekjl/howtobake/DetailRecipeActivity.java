@@ -15,7 +15,7 @@ import com.simplekjl.howtobake.fragments.StepDetailFragment;
 import com.simplekjl.howtobake.fragments.StepTabFragment;
 import com.simplekjl.howtobake.models.Recipe;
 
-public class DetailRecipeActivity extends AppCompatActivity implements RecipeDetailFragment.OnFragmentInteractionListener{
+public class DetailRecipeActivity extends AppCompatActivity implements StepTabFragment.OnTabListener{
 
 
     private Recipe mRecipe;
@@ -58,11 +58,6 @@ public class DetailRecipeActivity extends AppCompatActivity implements RecipeDet
 
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    @Override
     public boolean onSupportNavigateUp() {
         if (!RecipeDetailFragment.isTablet) {
             return Navigation.findNavController(this, R.id.recipe_navigation).navigateUp();
@@ -79,5 +74,10 @@ public class DetailRecipeActivity extends AppCompatActivity implements RecipeDet
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTabClicked(Integer position) {
+        mStepTabFragment.changeTab(position);
     }
 }
