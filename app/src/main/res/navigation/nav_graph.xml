@@ -11,11 +11,21 @@
         tools:layout="@layout/fragment_recipe_detail">
         <action
             android:id="@+id/action_recipeDetailFragment_to_stepTabFragment"
-            app:destination="@id/stepTabFragment" />
+            app:destination="@id/stepTabFragment">
+            <argument
+                android:name="tab_position"
+                android:defaultValue="0"
+                app:argType="integer" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/stepTabFragment"
         android:name="com.simplekjl.howtobake.fragments.StepTabFragment"
         android:label="fragment_step_tab"
-        tools:layout="@layout/fragment_step_tab" />
+        tools:layout="@layout/fragment_step_tab">
+        <argument
+            android:name="tab_position"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
 </navigation>

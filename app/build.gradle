@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: "androidx.navigation.safeargs"
 
 android {
     compileSdkVersion 28
@@ -9,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true //important
     }
     buildTypes {
         release {
@@ -59,4 +61,11 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-core:2.7.3'
     implementation 'com.google.android.exoplayer:exoplayer-dash:2.7.3'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.7.3'
+
+    /** LiveData and ViewModel **/
+    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+
+    /** Room **/
+    implementation "android.arch.persistence.room:runtime:$room_version"
+    annotationProcessor "android.arch.persistence.room:compiler:$room_version"
 }

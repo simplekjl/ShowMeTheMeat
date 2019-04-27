@@ -3,10 +3,14 @@ package com.simplekjl.howtobake.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+@Entity(tableName = "recipe")
 public class Recipe implements Parcelable {
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
         @Override
@@ -19,6 +23,7 @@ public class Recipe implements Parcelable {
             return new Recipe[size];
         }
     };
+    @PrimaryKey
     @SerializedName("id")
     private int id;
     @SerializedName("name")
