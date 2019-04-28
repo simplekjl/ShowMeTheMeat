@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.simplekjl.howtobake.R;
 import com.simplekjl.howtobake.models.Step;
-import com.simplekjl.howtobake.utils.OnItemClickListener;
+import com.simplekjl.howtobake.utils.StepClickListener;
 
 import java.util.List;
 
@@ -20,11 +20,11 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
 
     private Context mContext;
     private List<Step> mList;
-    private OnItemClickListener onItemClickListener;
+    private StepClickListener stepClickListener;
 
-    public StepAdapter(List<Step> mStepsList, OnItemClickListener listener) {
-        onItemClickListener = listener;
+    public StepAdapter(List<Step> mStepsList, StepClickListener listener) {
         mList = mStepsList;
+        stepClickListener = listener;
     }
 
     @NonNull
@@ -57,12 +57,12 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
             mStepTitle = itemView.findViewById(R.id.step_title);
             mCardView = itemView.findViewById(R.id.step_card);
         }
-        void seItem(Step step) {
+        void seItem(final Step step) {
             mStepTitle.setText(step.getShortDescription());
             mCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onItemClick(getAdapterPosition());
+                    stepClickListener.onItemClicked(step.getId());
                 }
             });
         }

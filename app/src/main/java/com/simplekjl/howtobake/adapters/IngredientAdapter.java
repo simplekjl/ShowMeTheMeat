@@ -19,7 +19,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
     private Context mContext;
     private List<Ingredient> mList;
 
-    public IngredientAdapter(List<Ingredient> mList) {
+    public void setIngredients(List<Ingredient> mList) {
         this.mList = mList;
     }
 
@@ -35,7 +35,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-            viewHolder.setItem(mList.get(position));
+        viewHolder.setItem(mList.get(position));
     }
 
     @Override

@@ -1,23 +1,25 @@
 package com.simplekjl.howtobake.adapters;
 
+import android.content.Context;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+
+import com.simplekjl.howtobake.R;
 import com.simplekjl.howtobake.fragments.StepDetailFragment;
 
 import java.util.List;
 
 public class StepTabAdapter extends FragmentStatePagerAdapter {
     private final List<StepDetailFragment> tabs;
-    private final String recipeIntro;
-    private final String pageTitle;
+    private Context mContext;
 
-    public StepTabAdapter(FragmentManager fm, List<StepDetailFragment> tabs, String recipeIntro, String pageTitle) {
+    public StepTabAdapter(FragmentManager fm, List<StepDetailFragment> tabs, Context context) {
         super(fm);
         this.tabs = tabs;
-        this.recipeIntro = recipeIntro;
-        this.pageTitle = pageTitle;
+        mContext= context;
     }
 
     @Override
@@ -34,8 +36,8 @@ public class StepTabAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         if (position == 0){
-            return recipeIntro;
+            return mContext.getString(R.string.intro_title);
         }else
-            return pageTitle + position;
+            return mContext.getString(R.string.step_title).concat(String.valueOf(position));
     }
 }
