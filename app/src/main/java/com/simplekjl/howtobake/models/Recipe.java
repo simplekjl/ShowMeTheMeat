@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 import com.google.gson.annotations.SerializedName;
 import com.simplekjl.howtobake.database.converters.RecipeListsConverter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "recipe")
@@ -84,7 +85,11 @@ public class Recipe implements Parcelable {
     }
 
     public List<Ingredient> getIngredientsList() {
-        return ingredientsList;
+        if (ingredientsList != null){
+            return ingredientsList;
+        }else{
+            return new ArrayList<>();
+        }
     }
 
     public void setIngredientsList(List<Ingredient> ingredientsList) {

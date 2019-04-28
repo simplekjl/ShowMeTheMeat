@@ -14,10 +14,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.simplekjl.howtobake.adapters.RecipeAdapter;
+import com.simplekjl.howtobake.database.AppDatabase;
 import com.simplekjl.howtobake.databinding.ActivityMainBinding;
 import com.simplekjl.howtobake.models.Recipe;
 import com.simplekjl.howtobake.network.ApiClient;
 import com.simplekjl.howtobake.network.ServiceEndpoints;
+import com.simplekjl.howtobake.utils.AppExecutors;
 import com.simplekjl.howtobake.utils.OnItemClickListener;
 
 import java.util.ArrayList;
@@ -42,19 +44,33 @@ public class MainActivity extends AppCompatActivity {
     private List<Recipe> mRecipeList;
     private RecipeAdapter mRecipeAdapter;
     private Context mContext;
+    // database
+    private AppDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mDb = AppDatabase.getInstance(this);
         mContext = this;
         if (mRecipeList != null) {
             showResults();
-        } else {
+        } else if (isOnline()) {
             getRecipes();
+        } else {
+            getRecipesFromDb();
         }
 
+    }
 
+    private void storeRecipes() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                for (Recipe item : mRecipeList)
+                    mDb.recipeDao().insertRecipe(item);
+            }
+        });
     }
 
     private void getRecipes() {
@@ -67,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         mRecipeList = response.body();
+                        storeRecipes();
                         showResults();
                     }
                 }
@@ -75,7 +92,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 showErrorMessage();
-                Log.e(TAG, "Recipes Object call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void getRecipesFromDb() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mRecipeList = mDb.recipeDao().getRecipes();
+                if (mRecipeList != null) {
+                    showResults();
+                } else {
+                    showErrorMessage();
+                    Log.d(TAG, "No items in DB");
+                }
             }
         });
     }
@@ -106,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Integer item) {
                 Intent intent = new Intent(mContext, DetailRecipeActivity.class);
-                intent.putExtra("recipe", mRecipeList.get(item));
+                intent.putExtra(DetailRecipeActivity.RECIPE_KEY, mRecipeList.get(item));
                 startActivity(intent);
             }
         };
@@ -132,8 +163,10 @@ public class MainActivity extends AppCompatActivity {
 
     int numberOfColums() {
         Configuration configuration = getResources().getConfiguration();
-        if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_SMALL)
-                || getResources().getConfiguration().isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_NORMAL)) {
+        if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_SMALL) ||
+                getResources()
+                        .getConfiguration()
+                        .isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_NORMAL)) {
             return 1;
         } else if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE)) {
             return 2;
