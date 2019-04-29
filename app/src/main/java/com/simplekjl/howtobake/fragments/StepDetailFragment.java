@@ -3,16 +3,19 @@ package com.simplekjl.howtobake.fragments;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -21,55 +24,87 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.simplekjl.howtobake.R;
+import com.simplekjl.howtobake.databinding.FragmentStepDetailBinding;
+import com.simplekjl.howtobake.models.Step;
 
 public class StepDetailFragment extends Fragment {
 
+    public static final String STEP_KEY = "step";
     static final String POSITION_KEY = "position";
     private final String PLAYBACK_POSITION_KEY = "playback_position";
+    //binding
+    private FragmentStepDetailBinding mBinding;
     private int position;
     private SimpleExoPlayer player;
     private long playbackPosition = 0;
     private Configuration configuration;
-    private PlayerView mPlayer;
-    private TextView mDescription;
-    private LinearLayout mRootView;
+    private Step mStep;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            position = bundle.getInt(POSITION_KEY);
+            mStep = bundle.getParcelable(STEP_KEY);
+        }
+        if (savedInstanceState != null) {
+            playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION_KEY);
+        }
+        configuration = getActivity().getResources().getConfiguration();
+    }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_step_detail,container,false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        mBinding = DataBindingUtil.inflate(inflater,
+                R.layout.fragment_step_detail, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPlayer = view.findViewById(R.id.exo_play);
+        //access data from datasource
+
+        if (position == 0) {
+            mBinding.tvIngredientItem.setVisibility(View.GONE);
+        } else {
+            mBinding.tvIngredientItem.setText(mStep.getDescription());
+        }
+        //get URI of the preview video
+        Uri videoUri;
+        if (!TextUtils.isEmpty(mStep.getVideoURL())) {
+            videoUri = Uri.parse(mStep.getVideoURL());
+        } else {
+            videoUri = Uri.parse(mStep.getThumbnailURL());
+        }
+
+        if (videoUri == null || videoUri.equals(Uri.EMPTY)) {
+            mBinding.playerView.setVisibility(View.GONE);
+        }
+
+        if (!videoUri.equals(Uri.EMPTY)) {
+            initialisePlayer(videoUri);
+        }
+
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE && !videoUri.equals(Uri.EMPTY)) {
+            mBinding.playerView.setLayoutParams(
+                    new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT)
+            );
+            if (!RecipeDetailFragment.isTablet) {
+                fullScreen();
+            }
+        }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
     // region ExoPlayer
     private void initialisePlayer(Uri videoUri) {
         if (player == null) {
@@ -78,7 +113,7 @@ public class StepDetailFragment extends Fragment {
                     new DefaultTrackSelector(),
                     new DefaultLoadControl());
 
-            mPlayer.setPlayer(player);
+            mBinding.playerView.setPlayer(player);
 
             DataSource.Factory dataSourceFactory =
                     new DefaultDataSourceFactory(
@@ -90,7 +125,7 @@ public class StepDetailFragment extends Fragment {
             player.prepare(mediaSource);
 
             if (getUserVisibleHint()) {
-                player.setPlayWhenReady(true);
+                player.setPlayWhenReady(false);
                 player.seekTo(playbackPosition);
             }
         }
@@ -114,10 +149,10 @@ public class StepDetailFragment extends Fragment {
 
     private void fullScreen() {
         hideSystemUI();
-        mPlayer.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+        mBinding.playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
 
         // Remove padding from layout
-        mRootView.setPadding(0, 0, 0, 0);
+        mBinding.rootView.setPadding(0, 0, 0, 0);
     }
 
     private void hideSystemUI() {
@@ -143,7 +178,46 @@ public class StepDetailFragment extends Fragment {
     // endregion
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        releasePlayer(); // Release exoPlayer
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            fragmentVisibility(true);
+        } else {
+            fragmentVisibility(false);
+        }
+    }
+
+    private void fragmentVisibility(boolean visible) {
+        if (player != null) {
+            if (visible) {
+                player.seekTo(playbackPosition);
+                player.setPlayWhenReady(false);
+            } else {
+                updateStartPosition();
+                player.setPlayWhenReady(false);
+            }
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (player != null) {
+            outState.putLong(PLAYBACK_POSITION_KEY, player.getCurrentPosition());
+        }
     }
+    // endregion
+
 }

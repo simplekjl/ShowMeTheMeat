@@ -27,5 +27,9 @@
             android:name="tab_position"
             android:defaultValue="0"
             app:argType="integer" />
+        <argument
+            android:name="recipe"
+            app:argType="com.simplekjl.howtobake.models.Recipe"
+            app:nullable="true" />
     </fragment>
 </navigation>

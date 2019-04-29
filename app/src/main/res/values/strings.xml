@@ -11,4 +11,6 @@
     <string name="previous_label">PREVIOUS</string>
     <string name="play_label">PLAY</string>
     <string name="pause_label">PAUSE</string>
+    <string name="intro_title">Intro</string>
+    <string name="step_title">Step:</string>
 </resources>

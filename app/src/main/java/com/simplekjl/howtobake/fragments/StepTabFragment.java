@@ -1,21 +1,21 @@
 package com.simplekjl.howtobake.fragments;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import com.google.android.material.tabs.TabLayout;
+
 import com.simplekjl.howtobake.R;
 import com.simplekjl.howtobake.adapters.StepTabAdapter;
-import com.simplekjl.howtobake.databinding.FragmentRecipeDetailBinding;
+import com.simplekjl.howtobake.database.AppDatabase;
+import com.simplekjl.howtobake.databinding.FragmentStepTabBinding;
+import com.simplekjl.howtobake.models.Recipe;
+import com.simplekjl.howtobake.utils.AppExecutors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,38 +23,28 @@ import java.util.List;
 
 public class StepTabFragment extends Fragment {
 
+    public static final String STEP_LIST_KEY = "step_list";
+    private FragmentStepTabBinding mBinding;
+    private int tabPosition = 0;
+    private AppDatabase mDb;
+    private Recipe mRecipe;
+    private List<StepDetailFragment> tabs;
 
-    private int mTabPosition;
-    private FragmentRecipeDetailBinding mBinding;
-    private int tabPosition;
-    private TabLayout stepTabLayout;
-    private ViewPager stepViewPager;
-    private Button prevStep;
-    private Button nextStep;
-    private String recipeIntro;
-    private String pageTitle;
-
-    private OnTabListener mListener;
 
     public StepTabFragment() {
         // Required empty public constructor
     }
 
-
-    public static StepTabFragment newInstance(String param1, String param2) {
-        StepTabFragment fragment = new StepTabFragment();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
+        mDb = AppDatabase.getInstance(getActivity());
+        if (!RecipeDetailFragment.isTablet) {
+            //safe arguments library
+            mRecipe = StepTabFragmentArgs.fromBundle(getArguments()).getRecipe();
+            tabPosition = StepTabFragmentArgs.fromBundle(getArguments()).getTabPosition();
+        }else{
+            mRecipe = getArguments().getParcelable(STEP_LIST_KEY);
         }
     }
 
@@ -62,72 +52,72 @@ public class StepTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mBinding = DataBindingUtil.setContentView((Activity) inflater.getContext(), R.layout.fragment_step_tab);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_step_tab, container, false);
         return mBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //TODO get the recipe from DB or somewhere else
-        //TODO populate the fragments in the adapter tan
-        List<StepDetailFragment> tabs = new ArrayList<>();
-         tabs = getTabFragments();
-        StepTabAdapter adapter = new StepTabAdapter(getFragmentManager(),tabs,"Intro","Step:");
+        // adapter top
+        tabs = getTabFragments(mRecipe.getStepsList().size());
+        StepTabAdapter adapter = new StepTabAdapter(getFragmentManager(), tabs, getContext());
+        //setting  viewPaget adapter
+        mBinding.stepViewPager.setAdapter(adapter);
+        mBinding.stepTab.setupWithViewPager(mBinding.stepViewPager);
 
+        mBinding.stepViewPager.setCurrentItem(tabPosition);
+
+        //Button listeners
+        mBinding.controls.buttonPrevStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBinding.stepViewPager.setCurrentItem(mBinding.stepViewPager.getCurrentItem() - 1, true);
+            }
+        });
+        mBinding.controls.buttonNextStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBinding.stepViewPager.setCurrentItem(mBinding.stepViewPager.getCurrentItem() + 1, true);
+            }
+        });
     }
 
-    private List<StepDetailFragment> getTabFragments() {
-        //TODO get the real number os steps need it
+
+    private void getRecipesFromDb() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                //from here extract the list
+                mRecipe = mDb.recipeDao().getRecipeById(tabPosition);
+                tabs = getTabFragments(mRecipe.getStepsList().size());
+            }
+        });
+    }
+
+    private List<StepDetailFragment> getTabFragments(int stepsNumber) {
         List<StepDetailFragment> tabs = new ArrayList<>();
-        int tabsNumber = 12;
-        for (int i = 0; i < tabsNumber; i++) {
+        for (int position = 0; position < stepsNumber; position++) {
             StepDetailFragment fragment = new StepDetailFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt(StepDetailFragment.POSITION_KEY,i);
+            bundle.putInt(StepDetailFragment.POSITION_KEY,position);
+            bundle.putParcelable(StepDetailFragment.STEP_KEY, mRecipe.getStepsList().get(position));
+            fragment.setArguments(bundle);
             tabs.add(fragment);
         }
         return tabs;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Integer position) {
-        if (mListener != null) {
-            mListener.onTabClicked(position);
-        }
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnTabListener) {
-            mListener = (OnTabListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+//        mListener = null;
     }
 
     public void changeTab(Integer position) {
-        stepViewPager.setCurrentItem(position);
+        mBinding.stepViewPager.setCurrentItem(position);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnTabListener {
-        void onTabClicked(Integer position);
-    }
+
 }

@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:padding="@dimen/general_16dp_margin">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/video_v"
+    <LinearLayout
+        android:id="@+id/root_view"
         android:layout_width="match_parent"
-        android:layout_height="255dp"
-        android:layout_marginBottom="@dimen/general_16dp_margin"
-        android:paddingBottom="10dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/general_16dp_margin">
 
-    <TextView
-        android:id="@+id/tv_ingredient_item"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        tools:text="This is a description of what's goint to be here blah blah blaah! "
-        android:paddingTop="@dimen/general_16dp_margin"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="255dp"
+            android:layout_marginBottom="@dimen/general_16dp_margin"
+            android:paddingBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tv_ingredient_item"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:paddingTop="@dimen/general_16dp_margin"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            tools:text="This is a description of what's goint to be here blah blah blaah! " />
 
 
-</LinearLayout>
+    </LinearLayout>
+</layout>

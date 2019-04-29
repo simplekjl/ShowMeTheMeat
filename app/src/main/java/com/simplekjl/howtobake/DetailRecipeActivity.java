@@ -1,43 +1,44 @@
 package com.simplekjl.howtobake;
 
-import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-
 import com.simplekjl.howtobake.fragments.RecipeDetailFragment;
-import com.simplekjl.howtobake.fragments.StepDetailFragment;
 import com.simplekjl.howtobake.fragments.StepTabFragment;
 import com.simplekjl.howtobake.models.Recipe;
+import com.simplekjl.howtobake.utils.OnItemClickListener;
 
-public class DetailRecipeActivity extends AppCompatActivity implements StepTabFragment.OnTabListener{
-
-
-    private Recipe mRecipe;
-    private boolean isTablet= false;
-    //Fragments
-    private RecipeDetailFragment mRecipeDetailFragment;
-    private StepTabFragment mStepTabFragment;
+public class DetailRecipeActivity extends AppCompatActivity implements
+        RecipeDetailFragment.UpdateTabListener {
 
     private static final String TAG = DetailRecipeActivity.class.getName();
+    public static String RECIPE_KEY = "recipe";
+    // values
+    private Recipe mRecipe;
+
+    //Fragments
+    private RecipeDetailFragment mRecipeDetailFragment = new RecipeDetailFragment();
+    private StepTabFragment mStepTabFragment = new StepTabFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_recipe);
         if (getIntent().getExtras() != null) {
-            mRecipe = getIntent().getExtras().getParcelable("recipe");
+            mRecipe = getIntent().getExtras().getParcelable(RECIPE_KEY);
             setTitle(mRecipe.getName());
             RecipeDetailFragment.mRecipe = mRecipe;
-            Log.d(TAG, "onCreate: "+ mRecipe);
+            Log.d(TAG, "onCreate: " + mRecipe);
         }
-        if(findViewById(R.id.step_tabs_container)!= null){
+        if (findViewById(R.id.step_tabs_container) != null) {
             RecipeDetailFragment.isTablet = true;
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(StepTabFragment.STEP_LIST_KEY,mRecipe);
+            mStepTabFragment.setArguments(bundle);
             setupTwoPanelView();
         }
 
@@ -48,11 +49,11 @@ public class DetailRecipeActivity extends AppCompatActivity implements StepTabFr
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.beginTransaction()
-                .replace(R.id.step_list_container, new RecipeDetailFragment())
+                .replace(R.id.step_list_container, mRecipeDetailFragment)
                 .commit();
 
         fragmentManager.beginTransaction()
-                .replace(R.id.step_tabs_container, new StepTabFragment())
+                .replace(R.id.step_tabs_container, mStepTabFragment)
                 .commit();
     }
 
@@ -67,17 +68,7 @@ public class DetailRecipeActivity extends AppCompatActivity implements StepTabFr
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onTabClicked(Integer position) {
+    public void changeTab(int position) {
         mStepTabFragment.changeTab(position);
     }
 }
