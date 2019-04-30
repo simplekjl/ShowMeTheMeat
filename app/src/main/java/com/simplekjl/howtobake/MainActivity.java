@@ -9,9 +9,13 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.test.espresso.IdlingResource;
 
 import com.simplekjl.howtobake.adapters.RecipeAdapter;
 import com.simplekjl.howtobake.database.AppDatabase;
@@ -21,6 +25,7 @@ import com.simplekjl.howtobake.network.ApiClient;
 import com.simplekjl.howtobake.network.ServiceEndpoints;
 import com.simplekjl.howtobake.utils.AppExecutors;
 import com.simplekjl.howtobake.utils.OnItemClickListener;
+import com.simplekjl.howtobake.utils.SimpleIdlingResource;
 import com.simplekjl.howtobake.widget.UpdateWidgetService;
 
 import java.util.ArrayList;
@@ -47,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
     private Context mContext;
     // database
     private AppDatabase mDb;
+
+    // idling
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +190,18 @@ public class MainActivity extends AppCompatActivity {
             //default value
             return 1;
         }
+    }
+
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
     }
 
 }

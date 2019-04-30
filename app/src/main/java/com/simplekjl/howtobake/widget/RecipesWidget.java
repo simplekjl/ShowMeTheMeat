@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.simplekjl.howtobake.MainActivity;
@@ -35,6 +36,10 @@ public class RecipesWidget extends AppWidgetProvider {
             ingredientsView.setTextViewText(R.id.single_line_label, ingredient.getIngredient());
             views.addView(R.id.layout_container, ingredientsView);
         }
+//        //get the jump into the recipe
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(MainActivity.RECIPE_ID,recipe);
+//        Intent fillIntent = new Intent();
         // Set click listener on container to open main activity.
         views.setOnClickPendingIntent(R.id.layout_container, pendingIntent);
         // Instruct the widget manager to update the widget
