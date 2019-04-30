@@ -13,4 +13,7 @@
     <string name="pause_label">PAUSE</string>
     <string name="intro_title">Intro</string>
     <string name="step_title">Step:</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="available_recipes">Available recipes</string>
 </resources>

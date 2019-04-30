@@ -15,4 +15,8 @@
 
     <color name="ControlerBackground">#CC000000</color>
     <color name="ControllerTextColor">#FFBEBEBE</color>
+
+    <color name="white">#ffffff</color>
+    <color name="white_pressed">#f2f2f2</color>
+    <color name="widget">#FCD132F0</color>
 </resources>

@@ -21,6 +21,7 @@ import com.simplekjl.howtobake.network.ApiClient;
 import com.simplekjl.howtobake.network.ServiceEndpoints;
 import com.simplekjl.howtobake.utils.AppExecutors;
 import com.simplekjl.howtobake.utils.OnItemClickListener;
+import com.simplekjl.howtobake.widget.UpdateWidgetService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getRecipesFromDb();
         }
-
     }
 
     private void storeRecipes() {
@@ -133,11 +133,12 @@ public class MainActivity extends AppCompatActivity {
         int columns = numberOfColums();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, columns);
         mBinding.rvRecipes.setLayoutManager(gridLayoutManager);
-        OnItemClickListener onItemClickListener = new OnItemClickListener<Integer>() {
+        OnItemClickListener onItemClickListener = new OnItemClickListener<Recipe>() {
             @Override
-            public void onItemClick(Integer item) {
+            public void onItemClick(Recipe recipe) {
                 Intent intent = new Intent(mContext, DetailRecipeActivity.class);
-                intent.putExtra(DetailRecipeActivity.RECIPE_KEY, mRecipeList.get(item));
+                intent.putExtra(DetailRecipeActivity.RECIPE_KEY,recipe);
+                updateWidget(recipe.getId());
                 startActivity(intent);
             }
         };
@@ -145,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
         mBinding.rvRecipes.setAdapter(mRecipeAdapter);
     }
 
+    void updateWidget(int id){
+        //update widget
+        UpdateWidgetService.startActionUpdateWidget(mContext,id);
+    }
     //region Error Message
     void showErrorMessage() {
         mBinding.progressBar.setVisibility(View.INVISIBLE);
