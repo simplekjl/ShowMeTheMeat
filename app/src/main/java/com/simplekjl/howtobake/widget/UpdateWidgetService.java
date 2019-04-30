@@ -8,7 +8,6 @@ import android.content.Intent;
 
 import androidx.annotation.Nullable;
 
-import com.simplekjl.howtobake.RecipesWidget;
 import com.simplekjl.howtobake.database.AppDatabase;
 import com.simplekjl.howtobake.models.Recipe;
 import com.simplekjl.howtobake.utils.AppExecutors;
@@ -57,7 +56,7 @@ public class UpdateWidgetService extends IntentService {
             public void run() {
                 Recipe recipe = AppDatabase.getInstance(getApplicationContext())
                         .recipeDao().getRecipeById(intExtra);
-                RecipesWidget.onUpdate(getApplicationContext(), appWidgetManager, recipe, appWidgetIds);
+                RecipesWidget.updateBakingWidget(getApplicationContext(), appWidgetManager, recipe, appWidgetIds);
             }
         });
     }
