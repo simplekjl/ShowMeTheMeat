@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.simplekjl.howtobake.R;
 import com.simplekjl.howtobake.models.Recipe;
+import com.simplekjl.howtobake.utils.BakingImagesAssets;
 import com.simplekjl.howtobake.utils.OnItemClickListener;
 
 import java.util.List;
@@ -50,6 +51,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         private CardView mRecipeCard;
         private TextView mTitle;
+        private TextView mServings;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -59,11 +61,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         private void bindViews(View itemView) {
             mRecipeCard = (CardView) itemView.findViewById(R.id.recipeCardView);
             mTitle = (TextView) itemView.findViewById(R.id.title);
+            mServings = (TextView) itemView.findViewById(R.id.servings);
         }
 
         void setItem(final Recipe recipe, final OnItemClickListener onItemClickListener) {
             mTitle.setText(recipe.getName());
-
+            mRecipeCard.setBackground(mContext.getDrawable(BakingImagesAssets.getBackgrounds().get(recipe.getId())));
+            mServings.setText(String.valueOf(recipe.getId()));
             mRecipeCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
