@@ -133,12 +133,12 @@ public class MainActivity extends AppCompatActivity {
         int columns = numberOfColums();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, columns);
         mBinding.rvRecipes.setLayoutManager(gridLayoutManager);
-        OnItemClickListener onItemClickListener = new OnItemClickListener<Integer>() {
+        OnItemClickListener onItemClickListener = new OnItemClickListener<Recipe>() {
             @Override
-            public void onItemClick(Integer position) {
+            public void onItemClick(Recipe recipe) {
                 Intent intent = new Intent(mContext, DetailRecipeActivity.class);
-                intent.putExtra(DetailRecipeActivity.RECIPE_KEY, mRecipeList.get(position));
-                updateWidget(position);
+                intent.putExtra(DetailRecipeActivity.RECIPE_KEY,recipe);
+                updateWidget(recipe.getId());
                 startActivity(intent);
             }
         };

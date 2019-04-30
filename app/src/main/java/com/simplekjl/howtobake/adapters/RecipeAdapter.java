@@ -61,13 +61,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             mTitle = (TextView) itemView.findViewById(R.id.title);
         }
 
-        void setItem(Recipe recipe, final OnItemClickListener onItemClickListener) {
+        void setItem(final Recipe recipe, final OnItemClickListener onItemClickListener) {
             mTitle.setText(recipe.getName());
 
             mRecipeCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onItemClick(getAdapterPosition());
+                    onItemClickListener.onItemClick(recipe);
                 }
             });
         }

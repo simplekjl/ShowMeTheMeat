@@ -2,9 +2,8 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
+    android:background="@color/colorPrimary"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
     android:padding="@dimen/widget_margin">
 
 
@@ -24,9 +23,10 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
         android:textColor="@color/textColorSecondary" />
     <LinearLayout
-        android:id="@+id/widget_ingredients_container"
+        android:id="@+id/layout_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/widget_margin"
         android:orientation="vertical" />
 
 </LinearLayout>
