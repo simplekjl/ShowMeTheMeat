@@ -24,8 +24,9 @@ import java.util.List;
 public class StepTabFragment extends Fragment {
 
     public static final String STEP_LIST_KEY = "step_list";
+    public static final String POSITION = "step_list";
     private FragmentStepTabBinding mBinding;
-    private int tabPosition = 0;
+    private int tabPosition;
     private AppDatabase mDb;
     private Recipe mRecipe;
     private List<StepDetailFragment> tabs;
@@ -41,10 +42,16 @@ public class StepTabFragment extends Fragment {
         mDb = AppDatabase.getInstance(getActivity());
         if (!RecipeDetailFragment.isTablet) {
             //safe arguments library
-            mRecipe = StepTabFragmentArgs.fromBundle(getArguments()).getRecipe();
-            tabPosition = StepTabFragmentArgs.fromBundle(getArguments()).getTabPosition();
-        }else{
+            if (StepTabFragmentArgs.fromBundle(getArguments()).getRecipe() != null) {
+                mRecipe = StepTabFragmentArgs.fromBundle(getArguments()).getRecipe();
+                tabPosition = StepTabFragmentArgs.fromBundle(getArguments()).getTabPosition();
+            }
+
+        } else if (getArguments() != null) {
             mRecipe = getArguments().getParcelable(STEP_LIST_KEY);
+        } else {
+            mRecipe = savedInstanceState.getParcelable(STEP_LIST_KEY);
+            tabPosition = savedInstanceState.getInt(POSITION);
         }
     }
 
@@ -99,14 +106,13 @@ public class StepTabFragment extends Fragment {
         for (int position = 0; position < stepsNumber; position++) {
             StepDetailFragment fragment = new StepDetailFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt(StepDetailFragment.POSITION_KEY,position);
+            bundle.putInt(StepDetailFragment.POSITION_KEY, position);
             bundle.putParcelable(StepDetailFragment.STEP_KEY, mRecipe.getStepsList().get(position));
             fragment.setArguments(bundle);
             tabs.add(fragment);
         }
         return tabs;
     }
-
 
 
     @Override
@@ -119,5 +125,15 @@ public class StepTabFragment extends Fragment {
         mBinding.stepViewPager.setCurrentItem(position);
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        if (mRecipe != null) {
+            outState.putParcelable(STEP_LIST_KEY, mRecipe);
+            if (mRecipe.getStepsList().get(tabPosition) != null) {
+                outState.putInt(POSITION, tabPosition);
+            }
+        }
 
+        super.onSaveInstanceState(outState);
+    }
 }

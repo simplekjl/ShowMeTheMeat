@@ -177,14 +177,13 @@ public class MainActivity extends AppCompatActivity {
 
     int numberOfColums() {
         Configuration configuration = getResources().getConfiguration();
-        if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_SMALL) ||
-                getResources()
-                        .getConfiguration()
-                        .isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_NORMAL)) {
+        if((configuration.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_SMALL){
             return 1;
-        } else if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_LARGE)) {
+        }else if((configuration.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_NORMAL){
+            return 1; }
+        else if((configuration.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE){
             return 2;
-        } else if (configuration.isLayoutSizeAtLeast(Configuration.SCREENLAYOUT_SIZE_XLARGE)) {
+        } else if((configuration.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE){
             return 3;
         } else {
             //default value

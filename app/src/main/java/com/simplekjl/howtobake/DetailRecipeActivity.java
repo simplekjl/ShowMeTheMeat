@@ -10,7 +10,6 @@ import androidx.navigation.Navigation;
 import com.simplekjl.howtobake.fragments.RecipeDetailFragment;
 import com.simplekjl.howtobake.fragments.StepTabFragment;
 import com.simplekjl.howtobake.models.Recipe;
-import com.simplekjl.howtobake.utils.OnItemClickListener;
 
 public class DetailRecipeActivity extends AppCompatActivity implements
         RecipeDetailFragment.UpdateTabListener {
@@ -30,16 +29,21 @@ public class DetailRecipeActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_detail_recipe);
         if (getIntent().getExtras() != null) {
             mRecipe = getIntent().getExtras().getParcelable(RECIPE_KEY);
-            setTitle(mRecipe.getName());
-            RecipeDetailFragment.mRecipe = mRecipe;
-            Log.d(TAG, "onCreate: " + mRecipe);
+
+        } else if (savedInstanceState != null) {
+            mRecipe = savedInstanceState.getParcelable(RECIPE_KEY);
         }
+        setTitle(mRecipe.getName());
+        RecipeDetailFragment.mRecipe = mRecipe;
+        Log.d(TAG, "onCreate: " + mRecipe);
         if (findViewById(R.id.step_tabs_container) != null) {
             RecipeDetailFragment.isTablet = true;
             Bundle bundle = new Bundle();
-            bundle.putParcelable(StepTabFragment.STEP_LIST_KEY,mRecipe);
+            bundle.putParcelable(StepTabFragment.STEP_LIST_KEY, mRecipe);
             mStepTabFragment.setArguments(bundle);
             setupTwoPanelView();
+        } else {
+            RecipeDetailFragment.isTablet = false;
         }
 
     }
@@ -66,6 +70,15 @@ public class DetailRecipeActivity extends AppCompatActivity implements
             return super.onSupportNavigateUp();
         }
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mRecipe!= null){
+            outState.putParcelable(RECIPE_KEY,mRecipe);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
 
     @Override
     public void changeTab(int position) {
