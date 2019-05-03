@@ -14,7 +14,6 @@
             app:destination="@id/stepTabFragment">
             <argument
                 android:name="tab_position"
-                android:defaultValue="0"
                 app:argType="integer" />
         </action>
     </fragment>
@@ -25,7 +24,6 @@
         tools:layout="@layout/fragment_step_tab">
         <argument
             android:name="tab_position"
-            android:defaultValue="0"
             app:argType="integer" />
         <argument
             android:name="recipe"

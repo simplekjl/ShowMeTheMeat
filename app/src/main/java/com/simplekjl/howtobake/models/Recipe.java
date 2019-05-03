@@ -127,4 +127,16 @@ public class Recipe implements Parcelable {
     public void setImage(String image) {
         this.image = image;
     }
+
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", ingredientsList=" + ingredientsList +
+                ", stepsList=" + stepsList +
+                ", servings=" + servings +
+                ", image='" + image + '\'' +
+                '}';
+    }
 }

@@ -21,7 +21,7 @@ import com.simplekjl.howtobake.utils.StepClickListener;
 
 public class RecipeDetailFragment extends Fragment implements StepClickListener {
 
-    public static boolean isTablet = false;
+    public static boolean isTwoPanel = false;
     public static Recipe mRecipe;
     //adapters
     private IngredientAdapter mIngredientAdapter;
@@ -85,11 +85,10 @@ public class RecipeDetailFragment extends Fragment implements StepClickListener 
 
     @Override
     public void onItemClicked(int position) {
-        if (!isTablet) {
+        if (!isTwoPanel) {
             Navigation.findNavController(getView())
                     .navigate(RecipeDetailFragmentDirections
-                            .actionRecipeDetailFragmentToStepTabFragment(mRecipe)
-                            .setTabPosition(position));
+                            .actionRecipeDetailFragmentToStepTabFragment(position,mRecipe));
 
         } else {
             updateTabListener.changeTab(position);
