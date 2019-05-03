@@ -1,6 +1,7 @@
 package com.simplekjl.howtobake.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,10 @@ public class StepTabFragment extends Fragment {
 
     public static final String STEP_LIST_KEY = "step_list";
     public static final String POSITION = "position";
+    public static Recipe mRecipe;
     private FragmentStepTabBinding mBinding;
     private int tabPosition;
     private AppDatabase mDb;
-    private Recipe mRecipe;
     private List<StepDetailFragment> tabs;
 
 
@@ -40,18 +41,19 @@ public class StepTabFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDb = AppDatabase.getInstance(getActivity());
-        if (!RecipeDetailFragment.isTablet) {
+        if (savedInstanceState != null) {
+
+            mRecipe = savedInstanceState.getParcelable(STEP_LIST_KEY);
+            tabPosition = savedInstanceState.getInt(POSITION);
+        } else if ( !RecipeDetailFragment.isTwoPanel) {
             //safe arguments library
-            if (StepTabFragmentArgs.fromBundle(getArguments()).getRecipe() != null) {
+            if (StepTabFragmentArgs.fromBundle(getArguments()) != null) {
                 mRecipe = StepTabFragmentArgs.fromBundle(getArguments()).getRecipe();
                 tabPosition = StepTabFragmentArgs.fromBundle(getArguments()).getTabPosition();
             }
 
         } else if (getArguments() != null) {
             mRecipe = getArguments().getParcelable(STEP_LIST_KEY);
-        } else {
-            mRecipe = savedInstanceState.getParcelable(STEP_LIST_KEY);
-            tabPosition = savedInstanceState.getInt(POSITION);
         }
     }
 
@@ -65,8 +67,10 @@ public class StepTabFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        int numTabs=0;
-        if(mRecipe != null){
+        int numTabs = 0;
+
+        if (mRecipe != null) {
+            Log.d("ERRORES", "RECIPE : " + mRecipe.toString());
             numTabs = mRecipe.getStepsList().size();
         }
         // adapter top
@@ -121,8 +125,8 @@ public class StepTabFragment extends Fragment {
     @Override
     public void onPause() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(STEP_LIST_KEY,mRecipe);
-        bundle.putInt(POSITION,tabPosition);
+        bundle.putParcelable(STEP_LIST_KEY, mRecipe);
+        bundle.putInt(POSITION, tabPosition);
         onSaveInstanceState(bundle);
         super.onPause();
     }

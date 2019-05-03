@@ -27,23 +27,26 @@ public class DetailRecipeActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_recipe);
-        if (getIntent().getExtras() != null) {
-            mRecipe = getIntent().getExtras().getParcelable(RECIPE_KEY);
+        if (mRecipe == null) {
+            if (savedInstanceState != null) {
+                mRecipe = savedInstanceState.getParcelable(RECIPE_KEY);
+            } else if (getIntent().getExtras() != null) {
+                mRecipe = getIntent().getExtras().getParcelable(RECIPE_KEY);
 
-        } else if (savedInstanceState != null) {
-            mRecipe = savedInstanceState.getParcelable(RECIPE_KEY);
+            }
         }
         setTitle(mRecipe.getName());
         RecipeDetailFragment.mRecipe = mRecipe;
+        StepTabFragment.mRecipe = mRecipe;
         Log.d(TAG, "onCreate: " + mRecipe);
         if (findViewById(R.id.step_tabs_container) != null) {
-            RecipeDetailFragment.isTablet = true;
+            RecipeDetailFragment.isTwoPanel = true;
             Bundle bundle = new Bundle();
             bundle.putParcelable(StepTabFragment.STEP_LIST_KEY, mRecipe);
             mStepTabFragment.setArguments(bundle);
             setupTwoPanelView();
         } else {
-            RecipeDetailFragment.isTablet = false;
+            RecipeDetailFragment.isTwoPanel = false;
         }
 
     }
@@ -64,7 +67,7 @@ public class DetailRecipeActivity extends AppCompatActivity implements
 
     @Override
     public boolean onSupportNavigateUp() {
-        if (!RecipeDetailFragment.isTablet) {
+        if (!RecipeDetailFragment.isTwoPanel) {
             return Navigation.findNavController(this, R.id.recipe_navigation).navigateUp();
         } else {
             return super.onSupportNavigateUp();
@@ -73,8 +76,8 @@ public class DetailRecipeActivity extends AppCompatActivity implements
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (mRecipe!= null){
-            outState.putParcelable(RECIPE_KEY,mRecipe);
+        if (mRecipe != null) {
+            outState.putParcelable(RECIPE_KEY, mRecipe);
         }
         super.onSaveInstanceState(outState);
     }

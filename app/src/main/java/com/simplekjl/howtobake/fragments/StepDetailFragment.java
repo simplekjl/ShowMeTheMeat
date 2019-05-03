@@ -92,7 +92,7 @@ public class StepDetailFragment extends Fragment {
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.MATCH_PARENT)
             );
-            if (!RecipeDetailFragment.isTablet) {
+            if (!RecipeDetailFragment.isTwoPanel) {
                 fullScreen();
             }
         }
@@ -145,7 +145,7 @@ public class StepDetailFragment extends Fragment {
             player.prepare(mediaSource);
 
             if (getUserVisibleHint()) {
-                player.setPlayWhenReady(false);
+                player.setPlayWhenReady(true);
                 player.seekTo(playbackPosition);
             }
         }
@@ -203,7 +203,9 @@ public class StepDetailFragment extends Fragment {
         super.onResume();
         if(mVideoUri !=null){
             initialisePlayer(mVideoUri);
+            player.seekTo(playbackPosition);
         }
+
     }
 
     @Override
@@ -232,7 +234,7 @@ public class StepDetailFragment extends Fragment {
         if (player != null) {
             if (visible) {
                 player.seekTo(playbackPosition);
-                player.setPlayWhenReady(false);
+                player.setPlayWhenReady(true);
             } else {
                 updateStartPosition();
                 player.setPlayWhenReady(false);
@@ -248,6 +250,7 @@ public class StepDetailFragment extends Fragment {
         }
         if(mStep != null ){
             outState.putParcelable(STEP_KEY,mStep);
+            outState.putInt(POSITION_KEY,position);
         }
     }
     // endregion
