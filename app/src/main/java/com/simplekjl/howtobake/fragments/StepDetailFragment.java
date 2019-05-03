@@ -9,13 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -35,6 +33,7 @@ public class StepDetailFragment extends Fragment {
 
     public static final String STEP_KEY = "step";
     static final String POSITION_KEY = "position";
+    private final String PLAYER_STATE = "playerState";
     private final String PLAYBACK_POSITION_KEY = "playback_position";
     //binding
     private FragmentStepDetailBinding mBinding;
@@ -44,19 +43,21 @@ public class StepDetailFragment extends Fragment {
     private Configuration configuration;
     private Step mStep;
     private Uri mVideoUri;
+    private boolean mPlayWhenReady = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getArguments();
-        if (bundle != null) {
+        if (savedInstanceState != null) {
+            playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION_KEY);
+            mPlayWhenReady = savedInstanceState.getBoolean(PLAYER_STATE);
+            mStep = savedInstanceState.getParcelable(STEP_KEY);
+        } else if (bundle != null) {
             position = bundle.getInt(POSITION_KEY);
             mStep = bundle.getParcelable(STEP_KEY);
         }
-        if (savedInstanceState != null) {
-            playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION_KEY);
-            mStep = savedInstanceState.getParcelable(STEP_KEY);
-        }
+
         configuration = getActivity().getResources().getConfiguration();
     }
 
@@ -114,8 +115,7 @@ public class StepDetailFragment extends Fragment {
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        if (savedInstanceState!= null)
-        {
+        if (savedInstanceState != null) {
             mStep = savedInstanceState.getParcelable(STEP_KEY);
             Uri uri = getUriVideo(mStep);
             if (!uri.equals(Uri.EMPTY)) {
@@ -145,7 +145,7 @@ public class StepDetailFragment extends Fragment {
             player.prepare(mediaSource);
 
             if (getUserVisibleHint()) {
-                player.setPlayWhenReady(true);
+                player.setPlayWhenReady(mPlayWhenReady);
                 player.seekTo(playbackPosition);
             }
         }
@@ -201,8 +201,9 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(mVideoUri !=null){
+        if (mVideoUri != null) {
             initialisePlayer(mVideoUri);
+            player.setPlayWhenReady(mPlayWhenReady);
             player.seekTo(playbackPosition);
         }
 
@@ -234,10 +235,10 @@ public class StepDetailFragment extends Fragment {
         if (player != null) {
             if (visible) {
                 player.seekTo(playbackPosition);
-                player.setPlayWhenReady(true);
+                player.setPlayWhenReady(mPlayWhenReady);
             } else {
                 updateStartPosition();
-                player.setPlayWhenReady(false);
+                player.setPlayWhenReady(mPlayWhenReady);
             }
         }
     }
@@ -247,10 +248,12 @@ public class StepDetailFragment extends Fragment {
         super.onSaveInstanceState(outState);
         if (player != null) {
             outState.putLong(PLAYBACK_POSITION_KEY, player.getCurrentPosition());
+            boolean isPlayWhenReady = player.getPlayWhenReady();
+            outState.putBoolean(PLAYER_STATE, isPlayWhenReady);
         }
-        if(mStep != null ){
-            outState.putParcelable(STEP_KEY,mStep);
-            outState.putInt(POSITION_KEY,position);
+        if (mStep != null) {
+            outState.putParcelable(STEP_KEY, mStep);
+            outState.putInt(POSITION_KEY, position);
         }
     }
     // endregion

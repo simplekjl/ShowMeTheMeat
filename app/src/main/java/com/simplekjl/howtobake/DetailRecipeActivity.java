@@ -41,6 +41,7 @@ public class DetailRecipeActivity extends AppCompatActivity implements
         Log.d(TAG, "onCreate: " + mRecipe);
         if (findViewById(R.id.step_tabs_container) != null) {
             RecipeDetailFragment.isTwoPanel = true;
+
             Bundle bundle = new Bundle();
             bundle.putParcelable(StepTabFragment.STEP_LIST_KEY, mRecipe);
             mStepTabFragment.setArguments(bundle);
