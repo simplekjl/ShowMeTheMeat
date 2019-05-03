@@ -24,7 +24,7 @@ import java.util.List;
 public class StepTabFragment extends Fragment {
 
     public static final String STEP_LIST_KEY = "step_list";
-    public static final String POSITION = "step_list";
+    public static final String POSITION = "position";
     private FragmentStepTabBinding mBinding;
     private int tabPosition;
     private AppDatabase mDb;
@@ -65,8 +65,12 @@ public class StepTabFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        int numTabs=0;
+        if(mRecipe != null){
+            numTabs = mRecipe.getStepsList().size();
+        }
         // adapter top
-        tabs = getTabFragments(mRecipe.getStepsList().size());
+        tabs = getTabFragments(numTabs);
         StepTabAdapter adapter = new StepTabAdapter(getFragmentManager(), tabs, getContext());
         //setting  viewPaget adapter
         mBinding.stepViewPager.setAdapter(adapter);
@@ -114,6 +118,14 @@ public class StepTabFragment extends Fragment {
         return tabs;
     }
 
+    @Override
+    public void onPause() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(STEP_LIST_KEY,mRecipe);
+        bundle.putInt(POSITION,tabPosition);
+        onSaveInstanceState(bundle);
+        super.onPause();
+    }
 
     @Override
     public void onDetach() {
@@ -133,7 +145,6 @@ public class StepTabFragment extends Fragment {
                 outState.putInt(POSITION, tabPosition);
             }
         }
-
         super.onSaveInstanceState(outState);
     }
 }

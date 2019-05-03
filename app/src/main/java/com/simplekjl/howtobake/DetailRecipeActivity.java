@@ -84,4 +84,5 @@ public class DetailRecipeActivity extends AppCompatActivity implements
     public void changeTab(int position) {
         mStepTabFragment.changeTab(position);
     }
+
 }

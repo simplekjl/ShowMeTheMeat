@@ -43,6 +43,7 @@ public class StepDetailFragment extends Fragment {
     private long playbackPosition = 0;
     private Configuration configuration;
     private Step mStep;
+    private Uri mVideoUri;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class StepDetailFragment extends Fragment {
         }
         if (savedInstanceState != null) {
             playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION_KEY);
+            mStep = savedInstanceState.getParcelable(STEP_KEY);
         }
         configuration = getActivity().getResources().getConfiguration();
     }
@@ -78,6 +80,25 @@ public class StepDetailFragment extends Fragment {
             mBinding.tvIngredientItem.setText(mStep.getDescription());
         }
         //get URI of the preview video
+        mVideoUri = getUriVideo(mStep);
+
+        if (!mVideoUri.equals(Uri.EMPTY)) {
+            initialisePlayer(mVideoUri);
+        }
+
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE && !mVideoUri.equals(Uri.EMPTY)) {
+            mBinding.playerView.setLayoutParams(
+                    new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT)
+            );
+            if (!RecipeDetailFragment.isTablet) {
+                fullScreen();
+            }
+        }
+    }
+
+    private Uri getUriVideo(Step mStep) {
         Uri videoUri;
         if (!TextUtils.isEmpty(mStep.getVideoURL())) {
             videoUri = Uri.parse(mStep.getVideoURL());
@@ -88,21 +109,20 @@ public class StepDetailFragment extends Fragment {
         if (videoUri == null || videoUri.equals(Uri.EMPTY)) {
             mBinding.playerView.setVisibility(View.GONE);
         }
+        return videoUri;
+    }
 
-        if (!videoUri.equals(Uri.EMPTY)) {
-            initialisePlayer(videoUri);
-        }
-
-        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE && !videoUri.equals(Uri.EMPTY)) {
-            mBinding.playerView.setLayoutParams(
-                    new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.MATCH_PARENT)
-            );
-            if (!RecipeDetailFragment.isTablet) {
-                fullScreen();
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState!= null)
+        {
+            mStep = savedInstanceState.getParcelable(STEP_KEY);
+            Uri uri = getUriVideo(mStep);
+            if (!uri.equals(Uri.EMPTY)) {
+                initialisePlayer(uri);
             }
         }
+        super.onViewStateRestored(savedInstanceState);
     }
 
     // region ExoPlayer
@@ -177,6 +197,15 @@ public class StepDetailFragment extends Fragment {
     }
     // endregion
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mVideoUri !=null){
+            initialisePlayer(mVideoUri);
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -216,6 +245,9 @@ public class StepDetailFragment extends Fragment {
         super.onSaveInstanceState(outState);
         if (player != null) {
             outState.putLong(PLAYBACK_POSITION_KEY, player.getCurrentPosition());
+        }
+        if(mStep != null ){
+            outState.putParcelable(STEP_KEY,mStep);
         }
     }
     // endregion
