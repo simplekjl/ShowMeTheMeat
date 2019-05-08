@@ -1,6 +1,8 @@
 # ShowMeTheMeat
 Baking application with tutorials of how to cook!
 
+[![Build Status](https://travis-ci.com/simplekjl/ShowMeTheMeat.svg?branch=master)](https://travis-ci.com/simplekjl/ShowMeTheMeat)
+
 Icons provided by
 <div>Icons made by <a href="https://www.flaticon.com/authors/mynamepong"
 title="mynamepong">mynamepong</a> from <a href="https://www.flaticon.com/"
