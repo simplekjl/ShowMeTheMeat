@@ -3,19 +3,19 @@ sudo: required
 
 matrix:
   include:
-    - language: java
-      install: true
-      os: osx
-      osx_image: xcode9.3
-      before_install:
-        - brew update
-        - brew outdated xctool || brew upgrade xctool
-        - npm install -g appium
-      script:
-        - ./gradlew clean build xcuiTest -x test -x signArchives
+    #- language: java
+     # install: true
+      #os: osx
+      #osx_image: xcode9.3
+      #before_install:
+      #  - brew update
+       # - brew outdated xctool || brew upgrade xctool
+        #- npm install -g appium
+      #script:
+       # - ./gradlew clean build xcuiTest -x test -x signArchives
 
     - language: android
-      install: true
+      #install: true
       install:
         - echo y | android update sdk -u -a -t tools
         - echo y | android update sdk -u -a -t platform-tools
