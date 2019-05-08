@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: "androidx.navigation.safeargs"
 
 android {
+    buildToolsVersion "28.0.3"
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.simplekjl.howtobake"
